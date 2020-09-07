@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>car showroom</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery.js"></script>
+</head>
+<body class="jumbotron ">
+    <div class="my-1">
+        <h2 class="display-4 text-center"><b>NEW CAR SHOWROOM</b></h2>
+        <hr class="my-4">
+
+     <div class="col-md-8 offset-md-3">
+      <label class="" for="">Search Your Car Name</label>
+     <div class="row">
+        <input type="text" class="form-control col-md-8" id="search" name="search" placeholder="Search Our Inventory">
+        <br><br><br>
+       
+        <!-- <h2 class="alert-danger text-dark" id="result"></h2> -->
+        <h3 class="alert-success text-dark" id="result"></h3>
+    </div>
+
+    
+
+    <div class="row">
+      
+        <form action="add_car.php"  id="add_car_form" method="post" class="col-md-6">
+           
+                <div id="feedback_message" class="alert-success"></div>
+            
+
+            <div class="form-group">
+                <label class="" for="">Add New Car</label>
+                <input type="text" class="form-control" autofocus name="car_name" id="" placeholder="" required>
+             
+              </div>
+              <button type="submit" class="btn btn-primary">Add New Car</button>
+
+
+         </form>
+         
+    </div>
+         <div class="col-xs-6">
+       <div id="car_result">
+
+       </div>
+    </div>
+
+ <hr>
+ <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-6">
+           <table class="table table-bordered table-hover">
+         
+               <thead class="table-dark">
+                     <tr>
+                         <th>Id</th>
+                         <th>Title</th>
+                         <th class="text-center">Total Cars</th>
+                     </tr>
+
+               </thead>
+                <tbody class="show_cars">
+
+                </tbody>
+           </table>
+        </div>
+
+        <div class="col-md-6">
+            <div id="feedback_container" class="alert-success"></div>
+            <div id="feedback_container2" class="alert-danger"></div> 
+
+            
+            <div id="action-container">
+           
+            </div><!-- action-container end -->
+    </div> 
+    </div>
+</div>
+ 
+
+
+</div> <!-- Jumbotron end -->
+      
+ 
+
+  <!-- container end -->
+
+   
+
+   
+   
+
+<script>
+ 
+    $(document).ready(function(){
+
+     
+       // show data delay function
+
+        setInterval(function(){
+            Show_data();
+        }, 1000);
+       
+        // Show data in table
+
+         function Show_data(){
+
+          $.ajax({
+             
+            url : "display_cars.php",
+            type: "POST",
+            success:function(show_car){
+
+                 if(!show_car.error){
+
+                    $(".show_cars").html(show_car);
+                 }
+             }
+            
+          });
+
+         }
+
+
+
+
+
+ 
+    // Data Search function is Start
+      
+        $("#search").keyup(function(){
+           let search =   $("#search").val();
+        
+        $.ajax({
+            
+            url: "search.php",
+            data:{search:search},
+            type:"POST",
+            success:function(data){
+                
+             if(!data.error){
+                 $("#result").html(data);
+             }
+
+            }
+
+        });
+   
+        }); // End of Search function is Start
+
+
+       // Add cars Database function is Start
+
+        $("#add_car_form").submit(function(evt){
+
+          evt.preventDefault();
+
+          var postData = $(this).serialize();
+          var url = $(this).attr('action');
+          $("#add_car_form").trigger("reset");
+          $("#feedback_message").show().text('Record Added Sucessfully');
+
+          setTimeout(function() {
+           $("#feedback_message").slideUp("slow");
+          },2000);
+
+          $.post(url, postData, function(php_table_data){
+       
+              $("#car_result").html(php_table_data);
+
+    
+          });
+
+        });// Add cars Database function is End
+
+
+           
+
+    });// End of Document Ready function
+
+</script>
+
+
+</body>
+</html>
